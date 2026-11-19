@@ -1,0 +1,44 @@
+# Condition endpoint (qssm_endpoint; gru64_endpoint with --model gru): next-base loss at the last position of each window.
+execution:
+  device: auto
+  seed: 11
+  precision: complex64
+model:
+  n_qubits: 4
+  cell_depth: 1
+  controller:
+    hidden_dim: 32
+  forgetting:
+    initial_gamma_min: 0.0001
+    initial_gamma_max: 0.1
+  readout:
+    measurement_groups: 2
+data:
+  genome:
+    train_chromosomes:
+    - chr22
+    validation_chromosomes:
+    - chr7
+    - chr8
+    test_chromosomes:
+    - chr9
+    - chr10
+    max_input_n_fraction: 0.01
+  benchmark:
+    task: human_nontata_promoters
+    requested_version: 0
+training:
+  objective: terminal_next_base
+  sequence_lengths:
+  - 64
+  - 128
+  length_probabilities:
+  - 0.5
+  - 0.5
+  processed_input_token_budget: 250000
+  micro_batch_size: 8
+  gradient_accumulation_steps: 4
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  gradient_clip_norm: 1.0
+  rc_augmentation: whole_example_before_target_split

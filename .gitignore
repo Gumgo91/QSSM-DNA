@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# run directories, checkpoints and cached features
+/runs/
+*.pt
+
+# downloaded and derived data; the promoter holdout is kept in the repository
+/data/*
+!/data/holdout_promoter_chr9_chr10.npz
+!/data/holdout_promoter_chr9_chr10.manifest.json
+
+/figures/

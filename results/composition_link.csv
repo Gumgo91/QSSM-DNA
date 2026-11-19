@@ -1,0 +1,6 @@
+quantity,n,pearson_r,spearman_r,min,max
+gc_r2_vs_mcc_all_register_seeds,90,0.9647422385713456,0.973264188994526,,
+gc_r2_vs_mcc_full_dynamics,70,0.9568673771492979,0.9572040941299974,,
+gc_r2_vs_mcc_register_means,9,0.9884633507962022,1.0,,
+increment_over_gc_cpg_mcc,9,,,-0.0002663549772467,0.0049028074617434
+increment_over_gc_cpg_auroc,9,,,-0.0053836446651583,-0.0022833269351716

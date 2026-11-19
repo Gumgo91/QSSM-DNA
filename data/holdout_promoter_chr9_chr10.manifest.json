@@ -1,0 +1,105 @@
+{
+  "rules": {
+    "positives": "EPDnew Hs 006 hg38 promoters on chr9 and chr10 with TATA flag 0; window -200..+50 around the 1-based TSS, reverse complemented on the minus strand",
+    "negatives": "longest NM_ refGene transcript with at least two exons per gene; 251-base windows downstream of the first exon in sense orientation, drawn uniformly without overlap (seed 2026); n_neg = round(n_pos * 4119 / 4915), split across chromosomes in proportion to eligible positions",
+    "exclusions": "any overlap with a Genomic Benchmarks promoter-task interval; any N; for negatives also +/-1000 bases around every EPDnew TSS and the selected positives",
+    "duplicates": "a window whose sequence equals a benchmark sequence (exact or reverse complement) is removed after the negatives are drawn",
+    "isolated10kb": "positives with no benchmark positive interval within 10 kb (negatives are flagged true)"
+  },
+  "sources": {
+    "epd_sga": {
+      "url": "https://epd.expasy.org/ftp/epdnew/H_sapiens/006/Hs_EPDnew_006_hg38.sga",
+      "path": "data/raw/epd_sga.sga",
+      "sha256": "9b800362010198aa123943e21d2402ab3a3af247b4c04014f683cf92a6004a9b",
+      "bytes": 1140769
+    },
+    "epd_motifs": {
+      "url": "https://epd.expasy.org/ftp/epdnew/H_sapiens/006/db/promoter_motifs.txt",
+      "path": "data/raw/epd_motifs.txt",
+      "sha256": "1e7692f5368816e7e777e910a04065f02c6d4318be6f073c17c6bd20d3a628b0",
+      "bytes": 485293
+    },
+    "refgene": {
+      "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/refGene.txt.gz",
+      "path": "data/raw/refgene.gz",
+      "sha256": "58fbc18d60bcda5fd4635e71b99dffde09d6eb67995c7f9ded3af194eb789756",
+      "bytes": 8668756
+    },
+    "gb_train_positive": {
+      "url": "https://raw.githubusercontent.com/ML-Bioinfo-CEITEC/genomic_benchmarks/main/datasets/human_nontata_promoters/train/positive.csv.gz",
+      "path": "data/raw/gb_train_positive.csv.gz",
+      "sha256": "8d8824518233a49cd02d9854a28154078bc69f3509719855dd4127a9024a44c9",
+      "bytes": 188240
+    },
+    "gb_train_negative": {
+      "url": "https://raw.githubusercontent.com/ML-Bioinfo-CEITEC/genomic_benchmarks/main/datasets/human_nontata_promoters/train/negative.csv.gz",
+      "path": "data/raw/gb_train_negative.csv.gz",
+      "sha256": "44b93cc1eb1273645d4123078809d9012bed3933605f4da906723a971b5a730e",
+      "bytes": 137784
+    },
+    "gb_test_positive": {
+      "url": "https://raw.githubusercontent.com/ML-Bioinfo-CEITEC/genomic_benchmarks/main/datasets/human_nontata_promoters/test/positive.csv.gz",
+      "path": "data/raw/gb_test_positive.csv.gz",
+      "sha256": "062277be939aea6538fe5e8a84792916835707e303e833d5ac1e6263c7416894",
+      "bytes": 63260
+    },
+    "gb_test_negative": {
+      "url": "https://raw.githubusercontent.com/ML-Bioinfo-CEITEC/genomic_benchmarks/main/datasets/human_nontata_promoters/test/negative.csv.gz",
+      "path": "data/raw/gb_test_negative.csv.gz",
+      "sha256": "3dd480a549f5e4b12770038e4ecc7f55cbec8101aa89b146fa9c4546ff7fad84",
+      "bytes": 46480
+    }
+  },
+  "n_pos": 764,
+  "n_neg": 641,
+  "n_pos_isolated10kb": 385,
+  "n_clusters": 1378,
+  "per_chrom": {
+    "chr9": {
+      "epd_promoters": 1148,
+      "tata1": 104,
+      "tata_missing": 0,
+      "nontata_dropped_gb_overlap": 656,
+      "nontata_dropped_N": 0,
+      "nontata_duplicate_windows": 0,
+      "positives": 388,
+      "negative_genes": 689,
+      "eligible_negative_positions": 46850538,
+      "negatives": 279
+    },
+    "chr10": {
+      "epd_promoters": 1130,
+      "tata1": 117,
+      "tata_missing": 0,
+      "nontata_dropped_gb_overlap": 636,
+      "nontata_dropped_N": 0,
+      "nontata_duplicate_windows": 0,
+      "positives": 377,
+      "negative_genes": 694,
+      "eligible_negative_positions": 60724403,
+      "negatives": 362
+    }
+  },
+  "removed_duplicates": [
+    {
+      "chrom": "chr9",
+      "start": 114322861,
+      "end": 114323112,
+      "strand": "+",
+      "source": "ORM1_2",
+      "y": 1
+    }
+  ],
+  "verification": {
+    "gb_coordinate_reproduction_chr9_chr10": {
+      "n": 2447,
+      "found_in_cached_copy": 2447
+    },
+    "interval_overlap_with_benchmark": 0,
+    "exact_or_rc_duplicates_with_benchmark": 0,
+    "windows_sharing_a_31mer_with_benchmark": 117,
+    "windows_total": 1405,
+    "contains_N": 0
+  },
+  "npz_sha256": "50df0567155ca11bae753e60e63b4611016dac2b9177b1faa722fa1213e42d13"
+}

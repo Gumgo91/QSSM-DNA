@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the article below."
+title: "QSSM-DNA"
+type: software
+version: 1.0.0
+license: MIT
+repository-code: "https://github.com/Gumgo91/QSSM-DNA"
+authors:
+  - family-names: Kong
+    given-names: Hyunseung
+    affiliation: "Interdisciplinary Program in Bioinformatics, Seoul National University"
+preferred-citation:
+  type: article
+  title: "QSSM-DNA: DNA pretraining and transfer in a four-qubit quantum state-space model"
+  authors:
+    - family-names: Kong
+      given-names: Hyunseung
+  journal: "Physica Scripta"
+  year: 2026
+  status: in-press

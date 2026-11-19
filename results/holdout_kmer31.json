@@ -1,0 +1,10 @@
+{
+ "windows_total": 1405,
+ "positives": 764,
+ "negatives": 641,
+ "windows_sharing_a_31mer_with_benchmark": 117,
+ "positives_sharing": 26,
+ "negatives_sharing": 91,
+ "benchmark_sequences": 36131,
+ "benchmark_31mers_both_strands": 9549662
+}

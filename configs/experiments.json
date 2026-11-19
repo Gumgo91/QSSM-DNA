@@ -1,0 +1,219 @@
+{
+  "description": "Experimental grid of the paper: seeds, token budgets, pretraining conditions, evaluation sets, probe, readouts, baselines, contrasts, statistics, noise settings and runtime measurement.",
+  "dev_seed": 11,
+  "replication_seeds": [
+    22,
+    33,
+    44,
+    55,
+    66,
+    77,
+    88,
+    99,
+    110,
+    121
+  ],
+  "token_budgets": {
+    "base": 250000,
+    "tenfold": 2500000
+  },
+  "conditions_base_budget": [
+    "qssm_endpoint",
+    "qssm_dense2",
+    "qssm_dense4",
+    "qssm_dense8",
+    "qssm_spread8",
+    "qssm_allpos",
+    "qssm_dense8_norzz",
+    "qssm_dense8_staticgamma",
+    "qssm_dense8_zerogamma",
+    "qssm_allpos_norzz",
+    "qssm_allpos_q6",
+    "qssm_allpos_norzz_q6",
+    "gru64_endpoint",
+    "gru64_dense8",
+    "gru64_allpos",
+    "gru8_dense8",
+    "gru8_allpos"
+  ],
+  "untrained_registers": [
+    "qssm_random_init",
+    "qssm_random_init_q6"
+  ],
+  "conditions_tenfold_budget": [
+    "qssm_endpoint",
+    "qssm_dense8",
+    "qssm_allpos",
+    "qssm_dense8_w256",
+    "gru64_dense8"
+  ],
+  "evaluation_sets": {
+    "primary": "holdout_promoter",
+    "benchmark": "gb_promoter",
+    "additional_tasks": [
+      "gb_cohn",
+      "gb_ocr"
+    ]
+  },
+  "holdout_rules": {
+    "positives": "EPDnew Hs 006 hg38, chr9+chr10, TATA-box=0, window -200..+50 around 1-based SGA TSS",
+    "negatives": "refGene NM_ longest transcript per gene, after first exon, sense orientation, uniform non-overlapping, seed 2026, n_neg=round(n_pos*4119/4915)",
+    "exclusions": "any >=1 bp overlap with GB promoter-task intervals; any N; negatives also +/-1000 bp around every EPD 006 TSS and selected positives",
+    "sensitivity": "positives with no GB positive interval within 10 kb"
+  },
+  "probe": {
+    "head": "LinearHead",
+    "optimizer": "AdamW",
+    "lr": 0.01,
+    "weight_decay": 0.0001,
+    "epochs": 200,
+    "seed": 11,
+    "standardization": false,
+    "threshold": "first argmax val MCC over linspace(0.02,0.98,97); prob>=thr"
+  },
+  "readouts": {
+    "qssm": [
+      "raw11",
+      "subset30",
+      "projected64",
+      "pauli255(gb_promoter only)"
+    ],
+    "gru": [
+      "projected64",
+      "hidden"
+    ]
+  },
+  "baselines": {
+    "kmer_lr": {
+      "k": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "C": [
+        0.01,
+        0.1,
+        1,
+        10
+      ],
+      "select": "validation MCC",
+      "features": "canonical k-mer frequencies + StandardScaler(train)"
+    },
+    "cnn": {
+      "blocks": "3x Conv1d(32,k=8)+ReLU+BN, MaxPool2 after blocks 1-2, GAP, Linear(32,1)",
+      "rc_average_logits": true,
+      "optimizer": "AdamW lr 1e-3 wd 1e-4",
+      "batch": 128,
+      "max_epochs": 20,
+      "early_stop": "val loss patience 3",
+      "seeds": "replication_seeds"
+    }
+  },
+  "primary_contrasts": {
+    "C1_supervision": "qssm_dense8/raw11 - qssm_endpoint/raw11",
+    "C2_readout": "qssm_dense8/subset30 - qssm_dense8/raw11",
+    "C3_pretraining": "qssm_dense8/subset30 - qssm_random_init/subset30",
+    "C4_classical_gap": "qssm_dense8/subset30 - gru64_dense8/projected64"
+  },
+  "statistics": {
+    "metric": "MCC (secondary AUROC)",
+    "unit": "seed (paired, n=10)",
+    "tests": [
+      "paired t (df=9, two-sided)",
+      "exact sign-flip permutation (2^10, two-sided)",
+      "Wilcoxon signed-rank (secondary)"
+    ],
+    "interval": "95% t-interval",
+    "multiplicity": "Holm across C1-C4 within each evaluation set",
+    "decision": "persists if Holm-adjusted permutation p<0.05 and 95% CI excludes 0",
+    "sample_uncertainty": "paired bootstrap over sequences (holdout: overlap clusters), 2000 resamples, thresholds frozen"
+  },
+  "noise": {
+    "one_factor": {
+      "p1": [
+        1e-05,
+        0.0001,
+        0.001
+      ],
+      "p2": [
+        0.0001,
+        0.001,
+        0.01
+      ],
+      "p_phi": [
+        0.0001,
+        0.001,
+        0.01,
+        0.05
+      ],
+      "readout": [
+        0.001,
+        0.01
+      ]
+    },
+    "combined": {
+      "moderate": {
+        "p1": 0.0001,
+        "p2": 0.001,
+        "p_phi": 0.001,
+        "readout": 0.01
+      },
+      "current": {
+        "p1": 0.001,
+        "p2": 0.01,
+        "p_phi": 0.01,
+        "readout": 0.01
+      }
+    },
+    "encoders": "qssm_allpos at the base budget (all settings); endpoint, dense8 and allpos at the ten-fold budget with their untrained registers (noiseless, two-qubit 1e-3, moderate)",
+    "readouts": [
+      "raw11",
+      "subset30"
+    ],
+    "shots": [
+      null,
+      1024
+    ],
+    "shot_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "policy_A": "noiseless probe+threshold, all settings",
+    "policy_B": "probe+threshold refit on noisy train/val, largest level per factor + combined",
+    "sets": [
+      "gb_promoter",
+      "holdout_promoter"
+    ],
+    "note": "hypothetical sensitivity, not a device model"
+  },
+  "runtime": {
+    "batch": [
+      1,
+      256
+    ],
+    "warmup": 10,
+    "repeats": 30,
+    "devices": [
+      "gpu",
+      "cpu"
+    ],
+    "models": [
+      "qssm_exact_rc",
+      "qssm_shots1024",
+      "gru64",
+      "gru8",
+      "cnn",
+      "kmer_lr"
+    ],
+    "qpu": "device time from stated hypothetical gate and reset durations"
+  }
+}
